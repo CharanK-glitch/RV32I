@@ -165,7 +165,7 @@ This document provides a roadmap for **RTOS integration on RV32I**, enabling **r
 
 
 
-# III. RTOS Implementation on Sapphire SOC
+# III. RV Core Implementation on Sapphire SOC
 
 Here's a comprehensive `README.md` for your Sapphire SoC project, styled after Shakti and RISC-V Steel:
 
