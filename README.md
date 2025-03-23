@@ -286,28 +286,7 @@ Distributed under MIT License. See [LICENSE](LICENSE) for details.
 - [SHAKTI Project](https://www.shakti.org.in/) for architectural inspiration
 - [RISC-V Steel](https://github.com/riscv-steel) for verification methodology
 - [Verilator](https://www.veripool.org/verilator/) simulation toolkit
-```
 
-**Key Fixes:**
-1. **DOI Handling**: Removed placeholder DOI badge (add real Zenodo DOI later)
-2. **Image Syntax**: Removed trailing text after image declaration
-3. **Code Block Formatting**: Added explicit `systemverilog` highlighting
-4. **Table Alignment**: Fixed column spacing for proper rendering
-5. **BibTeX Formatting**: Corrected citation syntax
-6. **License Link**: Added explicit link to LICENSE file
-7. **Consistent List Formatting**: Standardized hyphens for unordered lists
-
-**Still Requires:**
-1. Actual `block_diagram.png` in `docs/` folder
-2. Valid `LICENSE` file in repo root
-3. Real DOI badge after Zenodo integration
-
-This version passes GitHub's Markdown linting checks. For final deployment:
-```bash
-# Validate with markdownlint
-npm install -g markdownlint-cli
-markdownlint README.md
-```
 
 ![Screenshot 2025-03-23 213107](https://github.com/user-attachments/assets/1aa3e888-c468-46d0-88d6-d59ba2a0da30)
 
