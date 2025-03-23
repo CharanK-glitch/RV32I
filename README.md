@@ -1,4 +1,4 @@
-###  I RISC-V RV32I(single - Core) Architecture and Implementation
+# I. RISC-V RV32I(single - Core) Architecture and Implementation
 
 1. Overview
 
@@ -55,7 +55,7 @@ This repository serves as a foundation for understanding and developing RISC-V-b
 ![risc_architecture](https://github.com/user-attachments/assets/f0b33f83-b1b2-42e5-95cd-d2f98ebea5d6)
 
 
-# II RTOS Implementation on RV32I Core
+# II. RTOS Implementation on RV32I Core
 
 ## 1. Overview
 This document describes the implementation of an **RTOS** on the **RV32I Core**, taking inspiration from **Steel** documentation. The integration includes task management, scheduling, interrupt handling, and peripheral interaction.
@@ -165,7 +165,7 @@ This document provides a roadmap for **RTOS integration on RV32I**, enabling **r
 
 
 
-# III RTOS Implementation on Sapphire SOC
+# III. RTOS Implementation on Sapphire SOC
 
 Here's a comprehensive `README.md` for your Sapphire SoC project, styled after Shakti and RISC-V Steel:
 
