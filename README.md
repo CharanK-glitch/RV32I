@@ -55,3 +55,112 @@ This repository serves as a foundation for understanding and developing RISC-V-b
 ![risc_architecture](https://github.com/user-attachments/assets/f0b33f83-b1b2-42e5-95cd-d2f98ebea5d6)
 
 
+# RV32I Core and SoC Integration
+
+## 1. Overview
+This document provides guidelines for integrating peripherals with the **RV32I** core in a custom **SoC**, taking inspiration from the **Sapphire SoC** of the RISC-V open platform.
+
+## 2. System-on-Chip (SoC) Architecture
+
+### 2.1 Core Components
+- **RV32I Core**: Custom implementation of the RISC-V 32-bit integer core.
+- **Memory Subsystem**:
+  - Instruction Memory (IMEM)
+  - Data Memory (DMEM)
+  - External RAM (if required)
+- **Bus Interconnect**: AXI/AHB/APB or a custom interconnect for core-peripheral communication.
+- **Peripherals**:
+  - UART (for serial communication)
+  - SPI (for external memory/flash)
+  - I2C (for sensor interfaces)
+  - GPIO (for basic control and signaling)
+  - Timer (for system timekeeping and scheduling)
+- **Interrupt Controller**: Handles external and internal interrupts efficiently.
+- **Boot ROM**: Contains bootloader and initial setup code.
+
+## 3. Integration Steps
+
+### 3.1 Connecting the Core to the Interconnect
+1. Define a **bus interface** (AXI-Lite, AHB, or Wishbone) in Verilog for communication.
+2. Connect the RV32I core to the bus:
+   - **Instruction Fetch**: IMEM interface
+   - **Data Memory Access**: DMEM interface
+   - **Peripheral Access**: Mapped to specific address ranges
+3. Ensure proper **clocking and reset** mechanisms for synchronization.
+
+### 3.2 Memory Integration
+- Define memory-mapped regions for IMEM and DMEM.
+- Optionally include external memory with an AXI/AHB interface.
+- Implement an MMU (Memory Management Unit) if virtual memory is needed.
+
+### 3.3 Peripheral Address Mapping
+Allocate specific address ranges for each peripheral:
+| Peripheral | Base Address | Size |
+|------------|-------------|------|
+| UART       | 0x10000000  | 4KB  |
+| SPI        | 0x10001000  | 4KB  |
+| I2C        | 0x10002000  | 4KB  |
+| GPIO       | 0x10003000  | 4KB  |
+| Timer      | 0x10004000  | 4KB  |
+
+### 3.4 Interrupt Controller
+1. Implement a simple **PLIC (Platform-Level Interrupt Controller)**.
+2. Map peripheral interrupts to the core’s interrupt request lines.
+3. Define **Interrupt Service Routines (ISRs)** in the firmware.
+
+### 3.5 Bootloader and Firmware
+- Implement a **bootloader in ROM** to initialize the system.
+- Load the firmware from SPI Flash or external memory.
+- Write a minimal **C-based firmware** to verify core and peripheral functionality.
+
+## 4. Verilog Modules
+### 4.1 Core Interface (Example)
+```verilog
+module rv32i_core (
+    input wire clk,
+    input wire reset,
+    input wire [31:0] instr_in,
+    output wire [31:0] pc_out,
+    input wire [31:0] data_in,
+    output wire [31:0] data_out,
+    output wire mem_read,
+    output wire mem_write
+);
+    // Core logic
+endmodule
+```
+
+### 4.2 UART Example
+```verilog
+module uart (
+    input wire clk,
+    input wire reset,
+    input wire rx,
+    output wire tx,
+    input wire [7:0] data_in,
+    output wire [7:0] data_out
+);
+    // UART logic
+endmodule
+```
+
+## 5. Testing and Debugging
+- **Simulation**: Use **Verilator or ModelSim** for core and peripheral testing.
+- **FPGA Implementation**: Map the SoC onto an **Artix-7 or Genesys-2** board.
+- **Software Debugging**: Use **OpenOCD + GDB** for firmware debugging.
+- **Benchmarking**: Run basic **Dhrystone and CoreMark tests**.
+
+## 6. Future Enhancements
+- Implement **RV32IM or RV32GC** extensions.
+- Optimize **bus arbitration** for better performance.
+- Integrate a **custom accelerator (e.g., ML inference, DSP unit)**.
+- Port **FreeRTOS** to the SoC for multitasking.
+
+---
+This document is a foundation for **RV32I-based SoC** development and can be extended for more advanced RISC-V architectures.
+
+
+![Screenshot 2025-03-23 213107](https://github.com/user-attachments/assets/dcb62823-83fc-4c10-a7c2-81a6a9b2b6a2)
+
+
+
