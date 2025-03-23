@@ -1,0 +1,42 @@
+CC = riscv64-unknown-elf-gcc
+OBJDUMP = riscv64-unknown-elf-objdump
+OBJCOPY = riscv64-unknown-elf-objcopy
+SPIKE = spike
+PK = pk
+
+TARGET = test_program
+ASM_TARGET = test_core
+
+.PHONY: all clean run debug verify
+
+all: $(TARGET).elf $(ASM_TARGET).dump
+
+$(TARGET).elf: $(TARGET).c
+    $(CC) -march=rv32i -mabi=ilp32 -nostartfiles -o $@ $^
+
+$(ASM_TARGET).elf: $(ASM_TARGET).s
+    $(CC) -march=rv32i -mabi=ilp32 -nostartfiles -T link.ld -o $@ $^
+
+%.dump: %.elf
+    $(OBJDUMP) -D $< > $@
+
+%.hex: %.elf
+    $(OBJCOPY) -O verilog $< $@
+
+run: $(TARGET).elf
+    $(SPIKE) --isa=rv32i $(PK) $<
+
+run-asm: $(ASM_TARGET).elf
+    $(SPIKE) --isa=rv32i $<
+
+debug: $(TARGET).elf
+    $(SPIKE) -d --isa=rv32i $(PK) $<
+
+verify: $(ASM_TARGET).elf
+    $(SPIKE) --isa=rv32i $< --log=spike.log
+    grep "a0 0x00000000" spike.log && echo "Test Passed" || echo "Test Failed"
+
+clean:
+    rm -f *.elf *.dump *.hex *.log
+
+what type of file is this
