@@ -63,8 +63,8 @@ This document describes the implementation of an **RTOS** on the **RV32I Core**,
 ## 2. System Architecture
 
 ### 2.1 Components
-- **RV32I Core**: Custom RISC-V core with MMU (optional for RTOS)
-- **Scheduler**: Preemptive round-robin or priority-based scheduling
+- RV32I Core: Custom RISC-V core with MMU (optional for RTOS)
+- cheduler: Preemptive round-robin or priority-based scheduling
 - **Task Management**: Context switching and multi-threading support
 - **Interrupt Handling**: External and software-triggered interrupts
 - **Memory Management**: Stack and heap allocation per task
@@ -199,7 +199,7 @@ Sapphire SoC is a minimalist RV32I RISC-V implementation targeting FPGA-based em
 
 ## Architecture
 ### Core Pipeline
-```systemverilog
+```SystemVerilog
 module sapphire_core (
   input  logic        clk,
   input  logic        resetn,
