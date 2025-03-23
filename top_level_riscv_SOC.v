@@ -7,13 +7,28 @@ module riscv_soc (
     // UART
     output uart_tx,
     input uart_rx,
-    // External Memory Interface
-    output [31:0] ext_mem_addr,
-    output [31:0] ext_mem_wdata,
-    output ext_mem_we,
-    output ext_mem_re,
-    input [31:0] ext_mem_rdata,
-    input ext_mem_ready
+    // AXI4-Lite Interface
+    // Write Address Channel
+    output [31:0] axi_awaddr,
+    output axi_awvalid,
+    input axi_awready,
+    // Write Data Channel
+    output [31:0] axi_wdata,
+    output axi_wvalid,
+    input axi_wready,
+    // Write Response Channel
+    input [1:0] axi_bresp,
+    input axi_bvalid,
+    output axi_bready,
+    // Read Address Channel
+    output [31:0] axi_araddr,
+    output axi_arvalid,
+    input axi_arready,
+    // Read Data Channel
+    input [31:0] axi_rdata,
+    input [1:0] axi_rresp,
+    input axi_rvalid,
+    output axi_rready
 );
 
     // Core Interface
@@ -21,16 +36,24 @@ module riscv_soc (
     wire mem_we, mem_re, mem_ready;
     wire stall;
 
+    // System Bus
+    wire [31:0] bus_addr, bus_wdata, bus_rdata;
+    wire bus_we, bus_re, bus_ready;
+
+    // Address Decoder Signals
+    wire mem_select;  // 0=Peripheral, 1=AXI Memory
+    wire [31:0] axi_mem_rdata;
+    wire axi_mem_ready;
+
     // Interrupt Signals
     wire timer_irq, uart_irq;
     wire [4:0] plic_irq_id;
     wire plic_irq;
 
-    // System Bus
-    wire [31:0] bus_addr, bus_wdata, bus_rdata;
-    wire bus_we, bus_re, bus_ready;
+    // Address Decoder
+    assign mem_select = (mem_addr >= 32'h4000_0000); // Memory-mapped above 1GB
     
-    // Instantiate RISC-V Core
+    // Core Instantiation
     rv32i_core core (
         .clk(clk),
         .resetn(resetn),
@@ -47,25 +70,53 @@ module riscv_soc (
         .irq_id(plic_irq_id)
     );
 
-    // Memory System
-    mem_system memory_subsystem (
+    // AXI4-Lite Manager for External Memory
+    axi_lite_manager axi_mgr (
         .clk(clk),
         .resetn(resetn),
-        .core_addr(mem_addr),
-        .core_wdata(mem_wdata),
-        .core_we(mem_we),
-        .core_re(mem_re),
-        .core_rdata(mem_rdata),
-        .core_ready(mem_ready),
-        .ext_mem_addr(ext_mem_addr),
-        .ext_mem_wdata(ext_mem_wdata),
-        .ext_mem_we(ext_mem_we),
-        .ext_mem_re(ext_mem_re),
-        .ext_mem_rdata(ext_mem_rdata),
-        .ext_mem_ready(ext_mem_ready)
+        .addr(mem_addr),
+        .wdata(mem_wdata),
+        .we(mem_we & mem_select),
+        .re(mem_re & mem_select),
+        .rdata(axi_mem_rdata),
+        .ready(axi_mem_ready),
+        // AXI Interface
+        .AWADDR(axi_awaddr),
+        .AWVALID(axi_awvalid),
+        .AWREADY(axi_awready),
+        .WDATA(axi_wdata),
+        .WVALID(axi_wvalid),
+        .WREADY(axi_wready),
+        .BRESP(axi_bresp),
+        .BVALID(axi_bvalid),
+        .BREADY(axi_bready),
+        .ARADDR(axi_araddr),
+        .ARVALID(axi_arvalid),
+        .ARREADY(axi_arready),
+        .RDATA(axi_rdata),
+        .RRESP(axi_rresp),
+        .RVALID(axi_rvalid),
+        .RREADY(axi_rready)
     );
 
-    // Peripherals
+    // System Bus Controller for Peripherals
+    system_bus_ctrl bus_ctrl (
+        .clk(clk),
+        .resetn(resetn),
+        .cpu_addr(mem_addr),
+        .cpu_wdata(mem_wdata),
+        .cpu_we(mem_we & ~mem_select),
+        .cpu_re(mem_re & ~mem_select),
+        .cpu_rdata(bus_rdata),
+        .cpu_ready(bus_ready),
+        // Bus Interface
+        .bus_addr(bus_addr),
+        .bus_wdata(bus_wdata),
+        .bus_we(bus_we),
+        .bus_re(bus_re)
+    );
+
+    // Peripheral Instantiation
     gpio gpio0 (
         .clk(clk),
         .resetn(resetn),
@@ -108,11 +159,55 @@ module riscv_soc (
         .irq(plic_irq)
     );
 
-    // Stall Unit
+    // Stall Control
     stall_unit stall_ctl (
         .imem_ready(mem_ready),
         .dmem_ready(mem_ready),
         .stall(stall)
     );
+
+    // Memory Response Mux
+    assign mem_rdata = mem_select ? axi_mem_rdata : bus_rdata;
+    assign mem_ready = mem_select ? axi_mem_ready : bus_ready;
+
+endmodule
+
+// System Bus Controller
+module system_bus_ctrl (
+    input clk,
+    input resetn,
+    // CPU Interface
+    input [31:0] cpu_addr,
+    input [31:0] cpu_wdata,
+    input cpu_we,
+    input cpu_re,
+    output [31:0] cpu_rdata,
+    output cpu_ready,
+    // Bus Interface
+    output [31:0] bus_addr,
+    output [31:0] bus_wdata,
+    output bus_we,
+    output bus_re
+);
+
+    reg [31:0] rdata_reg;
+    reg ready_reg;
+
+    always @(posedge clk or negedge resetn) begin
+        if (!resetn) begin
+            ready_reg <= 0;
+            rdata_reg <= 0;
+        end else begin
+            ready_reg <= cpu_we || cpu_re;
+            rdata_reg <= 32'h0; // Actual peripheral would drive this
+        end
+    end
+
+    assign bus_addr = cpu_addr;
+    assign bus_wdata = cpu_wdata;
+    assign bus_we = cpu_we;
+    assign bus_re = cpu_re;
+    assign cpu_rdata = rdata_reg;
+    assign cpu_ready = ready_reg;
 
 endmodule
