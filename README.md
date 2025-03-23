@@ -295,5 +295,7 @@ Distributed under MIT License. See `LICENSE` for details.
 
 Add actual block diagrams, synthesis results, and performance metrics from your implementation to complete the documentation.
 
+```
+
 ![Screenshot 2025-03-23 213107](https://github.com/user-attachments/assets/1aa3e888-c468-46d0-88d6-d59ba2a0da30)
 
