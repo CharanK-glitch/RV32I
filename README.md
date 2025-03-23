@@ -167,13 +167,6 @@ This document provides a roadmap for **RTOS integration on RV32I**, enabling **r
 
 # III. RV Core Implementation on Sapphire SOC
 
-
-
-```
-# Sapphire SoC: RV32I RISC-V Core
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-<!-- Replace with real DOI when available -->
-```
 **Inspired by:** [SHAKTI Project](https://www.shakti.org.in/) | **Design Philosophy:** [RISC-V Steel](https://github.com/riscv-steel/riscv-steel)
 
 ## Overview
@@ -184,7 +177,10 @@ Sapphire SoC is a minimalist RV32I RISC-V implementation targeting FPGA-based em
 - FPGA-optimized microarchitecture
 - FreeRTOS-compatible interrupt system
 
-![Sapphire SoC Block Diagram](docs/block_diagram.png)
+
+![Screenshot 2025-03-23 213107](https://github.com/user-attachments/assets/1aa3e888-c468-46d0-88d6-d59ba2a0da30)
+
+
 
 ## Features
 - **RV32I Compliance**: Full support for Base Integer ISA (v2.1)
@@ -289,5 +285,5 @@ Distributed under MIT License. See [LICENSE](LICENSE) for details.
 - [Verilator](https://www.veripool.org/verilator/) simulation toolkit
 
 
-![Screenshot 2025-03-23 213107](https://github.com/user-attachments/assets/1aa3e888-c468-46d0-88d6-d59ba2a0da30)
+
 
