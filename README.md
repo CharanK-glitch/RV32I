@@ -167,13 +167,13 @@ This document provides a roadmap for **RTOS integration on RV32I**, enabling **r
 
 # III. RV Core Implementation on Sapphire SOC
 
-Here's the corrected `README.md` with proper Markdown syntax (GitHub-compliant):
 
-```markdown
+
+```
 # Sapphire SoC: RV32I RISC-V Core
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 <!-- Replace with real DOI when available -->
-
+```
 **Inspired by:** [SHAKTI Project](https://www.shakti.org.in/) | **Design Philosophy:** [RISC-V Steel](https://github.com/riscv-steel/riscv-steel)
 
 ## Overview
@@ -199,7 +199,7 @@ Sapphire SoC is a minimalist RV32I RISC-V implementation targeting FPGA-based em
 
 ## Architecture
 ### Core Pipeline
-```systemverilog
+```SystemVerilog
 module sapphire_core (
   input  logic        clk,
   input  logic        resetn,
@@ -208,6 +208,7 @@ module sapphire_core (
   // Interrupt Interface
   input  logic [31:0] irq_lines
 );
+
 ```
 
 ### Memory Map
