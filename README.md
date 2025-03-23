@@ -264,20 +264,7 @@ int main() {
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## Citing Sapphire SoC
-```bibtex
-@misc{sapphire_soc,
-  author       = {Your Name},
-  title        = {Sapphire SoC: RV32I RISC-V Implementation},
-  year         = {2023},
-  howpublished = {GitHub repository},
-  url          = {https://github.com/yourusername/sapphire-soc}
-}
-```
-
-## License
-Distributed under MIT License. See [LICENSE](LICENSE) for details.
+   
 
 ## Acknowledgments
 - [SHAKTI Project](https://www.shakti.org.in/) for architectural inspiration
