@@ -1,0 +1,24 @@
+# Makefile
+CC = riscv32-unknown-elf-gcc
+OBJCOPY = riscv32-unknown-elf-objcopy
+SIM = iverilog
+VVP = vvp
+
+.PHONY: all program test clean
+
+all: test_program.hex
+
+test_program.hex: core_test.s
+    $(CC) -nostdlib -T link.ld -o test_program.elf $^
+    $(OBJCOPY) -O verilog test_program.elf test_program.hex
+
+program: test_program.hex
+    python program_fpga.py
+
+test:
+    $(SIM) -o riscv_soc_tb riscv_soc.v tb_riscv_soc.v
+    $(VVP) riscv_soc_tb
+    gtkwave riscv_soc.vcd
+
+clean:
+    rm -f *.elf *.hex *.vvp *.vcd
