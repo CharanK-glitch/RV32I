@@ -288,12 +288,11 @@ Distributed under MIT License. See `LICENSE` for details.
 - [Verilator](https://www.veripool.org/verilator/) simulation toolkit
 ```
 
-**Key Design Choices:**  
-1. **Name Inspiration**: "Sapphire" evokes both the gemstone's durability and blue hues (common in FPGA diagrams)  
-2. **SHAKTI Alignment**: Adopts similar verification strategies and documentation style  
-3. **Steel-like Minimalism**: Focus on RV32I-only implementation for maximum transparency  
+Key Design Choices:  
+1. Name Inspiration: "Sapphire" evokes both the gemstone's durability and blue hues (common in FPGA diagrams)  
+2. SHAKTI Alignment: Adopts similar verification strategies and documentation style  
+3. Steel-like Minimalism: Focus on RV32I-only implementation for maximum transparency  
 
-Add actual block diagrams, synthesis results, and performance metrics from your implementation to complete the documentation.
 
 ```
 
