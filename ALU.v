@@ -1,8 +1,7 @@
-module alu_riscv(operand_1, operand_2, aluop, out);
+module ALU(operand_1, operand_2, aluop, out);  // Fixed module name
 
 input   [31:0]  operand_1, operand_2;
 input   [3:0]   aluop;
-
 output reg [31:0] out;
 
 // ALU operation definitions
@@ -22,9 +21,8 @@ wire    [31:0]  addr_in, sub_in, xor_in, or_in, and_in, sll_in, srl_in, sra_in;
 wire            slt_in, sltu_in;
 wire signed [31:0] rs_op1;
 
-assign rs_op1 = operand_1;  // Signed view of operand_1
+assign rs_op1 = operand_1;  // Signed view
 
-// Arithmetic and logical operations
 assign addr_in = operand_1 + operand_2;
 assign sub_in  = operand_1 - operand_2;
 assign xor_in  = operand_1 ^ operand_2;
@@ -32,15 +30,13 @@ assign or_in   = operand_1 | operand_2;
 assign and_in  = operand_1 & operand_2;
 assign sll_in  = operand_1 << operand_2[4:0];
 assign srl_in  = operand_1 >> operand_2[4:0];
-assign sra_in  = operand_1 >>> operand_2[4:0];  // Arithmetic right shift
+assign sra_in  = operand_1 >>> operand_2[4:0];  // Arithmetic shift
 
-// Comparison operations
 assign slt_in  = (rs_op1 < $signed(operand_2));  // Signed comparison
-assign sltu_in = (operand_1 < operand_2);        // Unsigned comparison
+assign sltu_in = (operand_1 < operand_2);        // Unsigned
 
-// ALU output selection
+// ALU output with default case
 always @(*) begin
-    out = 32'h0000_0000;  // Default output
     case(aluop)
         `ADD:  out = addr_in;
         `SUB:  out = sub_in;
@@ -50,8 +46,9 @@ always @(*) begin
         `SLL:  out = sll_in;
         `SRL:  out = srl_in;
         `SRA:  out = sra_in;
-        `SLT:  out = {31'b0, slt_in};   // Set LSB based on signed comparison
-        `SLTU: out = {31'b0, sltu_in};  // Set LSB based on unsigned comparison
+        `SLT:  out = {31'b0, slt_in};
+        `SLTU: out = {31'b0, sltu_in};
+        default: out = 32'h0000_0000;  // Handle undefined aluop
     endcase
 end
 
