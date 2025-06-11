@@ -1,87 +1,49 @@
-module external_mem_interface #(
-    parameter ADDR_WIDTH = 32,
-    parameter DATA_WIDTH = 32
-)(
-    // Memory Controller Interface
-    input                       clk,
-    input                       rst_n,
-    input                       cs,       // Chip select
-    input                       we,       // Write enable
-    input                       oe,       // Output enable (read)
-    input      [ADDR_WIDTH-1:0] addr,
-    input      [DATA_WIDTH-1:0] wdata,
-    output reg [DATA_WIDTH-1:0] rdata,
-    output reg                  ready,    // Memory ready
-    // Physical Memory Pins
-    output                      mem_clk,
-    output reg                  mem_cs_n,
-    output reg                  mem_we_n,
-    output reg                  mem_oe_n,
-    output reg [ADDR_WIDTH-1:0] mem_addr,
-    inout      [DATA_WIDTH-1:0] mem_data
+module pip_reg4(
+    input clk,
+    input [4:0] addr_wb_in,
+    input werf_enable_in,
+    input [31:0] pc_plus_4_in,
+    input [31:0] immu_in,
+    input [31:0] pc_plus_immu_in,
+    input [31:0] read_mem_in,
+    input [31:0] alu_result_in,
+    input load_in,
+    input [1:0] wb_select_in,
+    
+    output reg [31:0] pc_plus_4_out,
+    output reg [31:0] immu_out,
+    output reg [31:0] pc_plus_immu_out,
+    output reg [31:0] read_mem_out,
+    output reg [31:0] alu_result_out,
+    output reg load_out,
+    output reg [1:0] wb_select_out,
+    output reg [4:0] addr_wb_out,
+    output reg werf_enable_out,
+    
+    // Additional output for write data
+    output [31:0] write_data
 );
 
-    // Tri-state buffer for data bus
-    reg [DATA_WIDTH-1:0] data_out;
-    assign mem_data = oe ? data_out : {DATA_WIDTH{1'bz}};
-
-    // State definitions (Verilog-compatible)
-    parameter IDLE  = 2'b00,
-              READ  = 2'b01,
-              WRITE = 2'b10,
-              WAIT  = 2'b11;
-
-    reg [1:0] state;
-
-    // Timing counter
-    reg [3:0] counter;
-
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            state <= IDLE;
-            ready <= 0;
-            mem_cs_n <= 1;
-            mem_we_n <= 1;
-            mem_oe_n <= 1;
-            counter <= 0;
-        end else begin
-            case(state)
-                IDLE: begin
-                    if (cs) begin
-                        mem_cs_n <= 0;
-                        mem_addr <= addr;
-                        if (we) begin
-                            mem_we_n <= 0;
-                            data_out <= wdata;
-                            state <= WRITE;
-                        end else begin
-                            mem_oe_n <= 0;
-                            state <= READ;
-                        end
-                        counter <= 2; // Adjust based on T_ACC/T_CLK
-                    end
-                end
-
-                READ: begin
-                    if (counter == 0) begin
-                        rdata <= mem_data;
-                        ready <= 1;
-                        mem_oe_n <= 1;
-                        mem_cs_n <= 1;
-                        state <= IDLE;
-                    end else counter <= counter - 1;
-                end
-
-                WRITE: begin
-                    if (counter == 0) begin
-                        ready <= 1;
-                        mem_we_n <= 1;
-                        mem_cs_n <= 1;
-                        state <= IDLE;
-                    end else counter <= counter - 1;
-                end
-            endcase
-        end
+    // Pipeline registers (same as your original code)
+    always @(posedge clk) begin
+        pc_plus_4_out      <= pc_plus_4_in;
+        immu_out           <= immu_in;
+        pc_plus_immu_out   <= pc_plus_immu_in;
+        read_mem_out       <= read_mem_in;
+        alu_result_out     <= alu_result_in;
+        load_out           <= load_in;
+        wb_select_out      <= wb_select_in;
+        addr_wb_out        <= addr_wb_in;
+        werf_enable_out    <= werf_enable_in;
     end
+
+    // Write Data Selection Unit
+    assign write_data = (werf_enable_out) ? 
+                       (wb_select_out == 2'b00) ? alu_result_out :  // ALU result
+                       (wb_select_out == 2'b01) ? read_mem_out :    // Memory read data
+                       (wb_select_out == 2'b10) ? pc_plus_4_out :   // PC+4 (for JAL/JALR)
+                       (wb_select_out == 2'b11) ? immu_out :       // Immediate (for LUI/AUIPC)
+                       32'b0 :                                     // Default case
+                       32'b0;                                      // When not writing
 
 endmodule
