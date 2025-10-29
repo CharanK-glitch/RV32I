@@ -1,3 +1,11 @@
+# RISC-V RV32I Processor Implementation
+
+## Author
+**Preetham Reddy**
+Custom RISC-V RV32I processor implementation with RTOS support and FPGA deployment capabilities.
+
+---
+
 # I. RISC-V RV32I(single - Core) Architecture and Implementation
 
 1. Overview
@@ -223,8 +231,8 @@ module sapphire_core (
 
 ### Build & Simulate
 ```bash
-git clone https://github.com/yourusername/sapphire-soc
-cd sapphire-soc
+git clone https://github.com/Preetham-Reddy-007/RISC-V-RV32I
+cd RISC-V-RV32I
 
 # Run UVM tests
 make sim TEST=axi_smoke
@@ -258,18 +266,31 @@ int main() {
 | LUT Utilization     | 1,200    | 2,500          | 750      |
 | Verification Method | UVM+FPGA | Formal         | Direct   |
 
+## About This Project
+This RISC-V RV32I processor implementation represents a comprehensive study of computer architecture, combining theoretical knowledge with practical FPGA deployment. The project includes a complete pipeline implementation, RTOS integration, and verification methodology.
+
 ## Contributing
+Contributions, suggestions, and feedback are welcome! Feel free to:
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Contact
+For questions or collaboration opportunities, please open an issue on the repository.
    
 
 ## Acknowledgments
 - [SHAKTI Project](https://www.shakti.org.in/) for architectural inspiration
 - [RISC-V Steel](https://github.com/riscv-steel) for verification methodology
 - [Verilator](https://www.veripool.org/verilator/) simulation toolkit
+
+## License
+This project is open source and available for educational and research purposes.
+
+---
+Developed by **Preetham Reddy** | [GitHub](https://github.com/Preetham-Reddy-007)
 
 
 
