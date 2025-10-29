@@ -226,8 +226,8 @@ module sapphire_core (
 ## Getting Started
 ### Prerequisites
 - RISC-V GCC Toolchain
-- Verilator (v5.0+)
-- Vivado 2022.1 (FPGA builds)
+- Verilator (v5.0+) - Open source Verilog simulator
+- Vivado 2022.1 (FPGA builds) or OpenRoad for open-source ASIC flow
 
 ### Build & Simulate
 ```bash
@@ -266,6 +266,28 @@ int main() {
 | LUT Utilization     | 1,200    | 2,500          | 750      |
 | Verification Method | UVM+FPGA | Formal         | Direct   |
 
+## Open Source Tools Used
+
+This project leverages several industry-standard open source tools:
+
+### Simulation & Verification
+- **[Verilator](https://www.veripool.org/verilator/)** - Fast, cycle-accurate Verilog/SystemVerilog simulator
+  - Used for RTL simulation and verification
+  - Supports UVM testbench integration
+  - Provides superior performance for large designs
+
+### Physical Design
+- **[OpenRoad](https://theopenroadproject.org/)** - Complete RTL-to-GDSII flow
+  - Automated place and route (PnR)
+  - Timing analysis and optimization
+  - Open-source alternative to commercial EDA tools
+  - Supports standard cell libraries
+
+### Development Tools
+- **RISC-V GNU Toolchain** - Cross-compilation for RV32I
+- **GTKWave** - Waveform viewer for debugging
+- **Yosys** - Open synthesis suite (optional)
+
 ## About This Project
 This RISC-V RV32I processor implementation represents a comprehensive study of computer architecture, combining theoretical knowledge with practical FPGA deployment. The project includes a complete pipeline implementation, RTOS integration, and verification methodology.
 
@@ -285,6 +307,30 @@ For questions or collaboration opportunities, please open an issue on the reposi
 - [SHAKTI Project](https://www.shakti.org.in/) for architectural inspiration
 - [RISC-V Steel](https://github.com/riscv-steel) for verification methodology
 - [Verilator](https://www.veripool.org/verilator/) simulation toolkit
+
+## References & Learning Resources
+
+### Books & Course Materials
+- **[Digital Design and Computer Architecture: RISC-V Edition](https://pages.hmc.edu/harris/ddca/ddcarv/ddcarv_videos.html)**
+  - Comprehensive video lectures by Harris & Harris
+  - Covers fundamental digital design and RISC-V architecture
+  - Excellent resource for understanding pipelined processors
+
+### Video Tutorials
+- **[RISC-V Processor Design Course](https://www.youtube.com/watch?v=lrN-uBKooRY&list=PLE2iE3NrQUKnJv67iQM0QS3rUy1DioqFw&index=1)**
+  - Step-by-step processor implementation guide
+  - Practical examples and hands-on projects
+  - Ideal for beginners and intermediate learners
+
+### Technical Documentation
+- **[RISC-V Instruction Set Reference Card](https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/notebooks/RISCV/RISCV_CARD.pdf)**
+  - Quick reference for RV32I instruction set
+  - Encoding formats and addressing modes
+  - Essential for assembly programming and verification
+
+### Official Specifications
+- [RISC-V ISA Specification](https://riscv.org/technical/specifications/) - Official instruction set architecture
+- [RISC-V Privileged Architecture](https://riscv.org/specifications/privileged-isa/) - CSR and privilege modes
 
 ## License
 This project is open source and available for educational and research purposes.
